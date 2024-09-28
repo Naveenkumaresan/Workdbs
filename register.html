@@ -81,7 +81,7 @@
         let MainForm = document.getElementById("MainForm");
 
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+        // const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
 
         // Saving the Cerditential in database 
         let RegisterUser = evt => {
@@ -93,10 +93,10 @@
         }
 
         // Check if passwords match and meet the required criteria
-        if (!passwordRegex.test(PasswordInp.value)) {
-            alert("Password must be at least 6 characters long, include an uppercase letter, a lowercase letter, a digit, and a special character.");
-            return;
-        }
+        // if (!passwordRegex.test(PasswordInp.value)) {
+        //     alert("Password must be at least 6 characters long, include an uppercase letter, a lowercase letter, a digit, and a special character.");
+        //     return;
+        // }
 
         if (PasswordInp.value !== ConfirmPasswordInp.value) {
             alert("Passwords do not match. Please try again.");
