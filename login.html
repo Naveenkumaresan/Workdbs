@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Firesbase Auth</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  </head>
+  <style>
+    .form-container {
+      max-width: 400px;
+      margin: 170px auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .btn-custom {
+      width: 100%;
+    }
+    .link-custom {
+      text-decoration: none;
+      color: #0d6efd;
+    }
+    .link-custom:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container form-container">
+    <h2 class="text-center mb-4">Login</h2>
+    <form id="MainForm">
+      <div class="form-floating mb-3">
+        <input type="email" class="form-control" id="emailInp" placeholder="name@example.com" required>
+        <label for="emailInp">Email address</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input type="password" class="form-control" id="passwordInp" placeholder="Password" required>
+        <label for="passwordInp">Password</label>
+      </div>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="forgot-password.html" class="link-custom">Forgot Password?</a>
+      </div>
+      <button type="submit" class="btn btn-primary btn-custom mb-2">Login</button>
+      <div class="text-center">
+        <p>Don't have an account? <a href="register.html" class="link-custom">Sign Up</a></p>
+      </div>
+    </form>
+  </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+        import { getDatabase, get, ref, child } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyAm547QeSpPt7ZPo3b6K6fj66QZopZW9ZQ",
+          authDomain: "dbworks-1855f.firebaseapp.com",
+          projectId: "dbworks-1855f",
+          storageBucket: "dbworks-1855f.appspot.com",
+          messagingSenderId: "326476691808",
+          appId: "1:326476691808:web:9ccabf22a5e49f8b8d4605"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase();
+        const auth = getAuth(app);
+        const dbref = ref(db)
+        
+        let EmailInp = document.getElementById("emailInp");
+        let PasswordInp = document.getElementById("passwordInp");
+        let MainForm = document.getElementById("MainForm");
+        let ForgotPassLabel = document.getElementById("forgotpasslabel")
+
+        let SignInUser = evt => {
+          evt.preventDefault();
+          signInWithEmailAndPassword(auth, EmailInp.value, PasswordInp.value)
+          .then((credentials) => {
+            get(child(dbref,  'UsersAuthList/' + credentials.user.uid)).then((snapshot)=>{
+                if(snapshot.exists){
+                    sessionStorage.setItem("user-info", JSON.stringify({
+                        firstname: snapshot.val().firstname,
+                        lastname: snapshot.val().lastname
+                    }))
+                    sessionStorage.setItem("user-creds", JSON.stringify(credentials.user));
+                    window.location.href = "index.html";
+                }
+            })
+            
+          })
+          .catch((error)=>{
+            alert("Invalid Email or password");
+            console.log(error.code);
+            console.log(error.message);
+          })
+        }
+
+        // let Forgotpassword = ()=>{
+        //     sendPasswordResetEmail(auth, EmailInp.value)
+        //     .then(()=>{
+        //         alert("A Password Reset Link has been sent to your email")
+        //     })
+        //     .catch((error)=>{
+        //         console.log(error.code);
+        //         console.log(error.message);
+        //     })
+        // }
+
+        MainForm.addEventListener('submit', SignInUser);
+        // ForgotPassLabel.addEventListener('click', Forgotpassword);
+      </script>
+  </body>
+</html>
